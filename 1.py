@@ -8,14 +8,14 @@ try:
                                   password="vladik12345",
                                   host="localhost",
                                   port="5432",
-                                  database="postgres_db")
+                                  database="postgres")
 
     # Курсор для выполнения операций с базой данных
     cursor = connection.cursor()
     # Распечатать сведения о PostgreSQL
-    insert_query = """ INSERT INTO courses (id, coin_name, price)
-                                              VALUES (%s, %s, %s)"""
-    cursor.execute(insert_query,(1,'e',1))
+    insert_query = """ SELECT EXISTS(SELECT * FROM courses WHERE coin_name="""+"'ETHBTC'" +""")"""
+    cursor.execute(insert_query)
+    print(cursor.fetchall())
     connection.commit()
 
 except (Exception, Error) as error:
