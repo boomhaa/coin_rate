@@ -1,27 +1,29 @@
-import psycopg2
-from psycopg2 import Error
+import time
+from threading import Thread
+from flask import Flask, jsonify, abort
+def site():
 
-try:
-    # Подключение к существующей базе данных
-    connection = psycopg2.connect(user="postgres",
-                                  # пароль, который указали при установке PostgreSQL
-                                  password="vladik12345",
-                                  host="localhost",
-                                  port="5432",
-                                  database="postgres")
 
-    # Курсор для выполнения операций с базой данных
-    cursor = connection.cursor()
-    # Распечатать сведения о PostgreSQL
-    insert_query = """ SELECT EXISTS(SELECT * FROM courses WHERE coin_name="""+"'ETHBTC'" +""")"""
-    cursor.execute(insert_query)
-    print(cursor.fetchall())
-    connection.commit()
+    app = Flask(__name__)
 
-except (Exception, Error) as error:
-    print("Ошибка при работе с PostgreSQL", error)
-finally:
-    if connection:
-        cursor.close()
-        connection.close()
-        print("Соединение с PostgreSQL закрыто")
+    @app.route('/v1/courses', methods=['GET'])
+    def get_courses():
+        return jsonify({'courses': 'p'})
+    app.run(debug=True, use_reloader=False)
+
+def f2():
+    while True:
+        print('ggg')
+        time.sleep(5)
+
+
+if __name__ == '__main__':
+
+    t1 = Thread(target=site,daemon=True)
+    t2 = Thread(target=f2,daemon=True)
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+
+
