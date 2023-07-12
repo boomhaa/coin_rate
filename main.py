@@ -9,8 +9,7 @@ import datetime
 
 def db(courses):
 
-    con = psycopg2.connect(user='postgres', password='vladik12345', host='localhost', port='5432',
-                           database="postgres")
+    con = psycopg2.connect(user='postgres', password='vladik12345', database="postgres",host='host.docker.internal')
     cursor = con.cursor()
     insert_query = """ INSERT INTO courses (id, coin_name, price, time)
                                                   VALUES (%s, %s, %s, %s)"""
@@ -59,7 +58,7 @@ def site():
         return jsonify({'course': task[0]})
 
 
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=False,host='0.0.0.0', port=5000)
 
 
 if __name__ == '__main__':

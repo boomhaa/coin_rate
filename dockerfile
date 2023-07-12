@@ -1,11 +1,13 @@
-FROM python:latest
-
-LABEL Maintainer="roushan.me17"
-
-WORKDIR /usr/app/src
+FROM python:3.11-slim-buster
 
 
-COPY main.py ./
+WORKDIR /app
 
 
-CMD [ "python", "./test.py"]
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENTRYPOINT ["python"]
+CMD ["main.py"]
