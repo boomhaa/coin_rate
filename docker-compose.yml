@@ -1,27 +1,24 @@
-volumes:
-  db_volume:
-
 version: '3.7'
 services:
   db:
     restart: always
-    image: postgres
+    image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=vladik12345
       - POSTGRES_DB=postgres
     volumes:
-      - db_volume:/var/lib/postgresql/data
+      - ./postgres-data/postgres:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - 5432:5432
   app:
     restart: always
     build: .
     ports:
-      - 1337:5000
+      - 5000:5000
     volumes:
       - .:/app
     depends_on:
       - db
-    entrypoint: [ "python", "main.py","runserver" ]
+    entrypoint: [ "python", "-u","main.py","runserver" ]
