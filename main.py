@@ -1,47 +1,35 @@
 import time
-
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify
 import requests
 import psycopg2
 from threading import Thread, Lock
 import datetime
+import configparser
 
 
-def db(courses):
-    global new_courses
-    db_name = 'postgres'
-    db_user = 'postgres'
-    db_pass = 'vladik12345'
-    db_host = 'db'
-    db_port = '5432'
+def post_and_update_data_in_db(courses):
     db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
     con = psycopg2.connect(db_string)
     cursor = con.cursor()
-
-    insert_query = """ INSERT INTO courses (id, coin_name, price, updated_at)
-                                                  VALUES (%s, %s, %s, %s)"""
-    update_query = """ UPDATE courses SET price = %s, updated_at = %s WHERE coin_name = %s"""
+    insert_query = """ INSERT INTO courses (id,coin_name, price, updated_at) 
+    VALUES (%s, %s, %s,%s)
+    ON CONFLICT (id) DO UPDATE 
+    SET price = %s, 
+    updated_at = %s"""
 
     for i in range(len(courses)):
-
         item_purchase_time = datetime.datetime.now()
-        item_tuple = (i + 1, courses[i]['symbol'], courses[i]['price'], item_purchase_time)
-        item2 = (courses[i]['price'], item_purchase_time, courses[i]['symbol'])
-        checker = '''SELECT EXISTS(SELECT * FROM courses WHERE coin_name = ''' + "'{}'".format(
-            courses[i]['symbol']) + ''')'''
-        cursor.execute(checker)
-
-        if not cursor.fetchall()[0][0]:
-            cursor.execute(insert_query, item_tuple)
-        else:
-            cursor.execute(update_query, item2)
+        item_tuple = (
+            i + 1, courses[i]['symbol'], courses[i]['price'], item_purchase_time, courses[i]['price'],
+            item_purchase_time)
+        cursor.execute(insert_query, item_tuple)
 
     con.commit()
     print('данные обновленны')
 
 
 def scedule():
-    global new_courses
+
     while True:
         courses = requests.get('https://api.binance.com/api/v3/ticker/price')
         if courses.status_code == 200:
@@ -50,20 +38,22 @@ def scedule():
                 new_courses = courses.json()
             finally:
                 lock.release()
-            db(courses.json())
+            post_and_update_data_in_db(new_courses)
         time.sleep(300)
 
 
 def site():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='html')
 
     @app.route('/v1/courses', methods=['GET'])
     def get_courses():
         lock.acquire()
         try:
-            return jsonify({'courses': new_courses})
+            data_courses = new_courses
+
         finally:
             lock.release()
+        return data_courses
 
     @app.route('/v1/courses/<string:coin_name>', methods=['GET'])
     def get_course(coin_name):
@@ -74,19 +64,21 @@ def site():
             lock.release()
         if len(task) == 0:
             return 'THIS SYMBOL DOES NOT EXIST'
-        return jsonify({'course': task[0]})
+        return task
 
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=5000)
+    app.run(debug=bool(config['DEFAULT']['debug']), use_reloader=False, host='0.0.0.0', port=5000)
 
 
 if __name__ == '__main__':
+    config = configparser.ConfigParser()
+    config.read('settings.config')
     lock = Lock()
     new_courses = {'courses': []}
-    db_name = 'postgres'
-    db_user = 'postgres'
-    db_pass = 'vladik12345'
-    db_host = 'db'
-    db_port = '5432'
+    db_name = config['DEFAULT']['db_name']
+    db_user = config['DEFAULT']['db_user']
+    db_pass = config['DEFAULT']['db_pass']
+    db_host = config['DEFAULT']['db_host']
+    db_port = int(config['DEFAULT']['db_port'])
     db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
     con = psycopg2.connect(db_string)
     cursor = con.cursor()
