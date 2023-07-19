@@ -1,5 +1,5 @@
 import time
-from flask import Flask, jsonify
+from flask import Flask
 import requests
 import psycopg2
 from threading import Thread, Lock
@@ -11,11 +11,11 @@ def post_and_update_data_in_db(courses):
     db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
     con = psycopg2.connect(db_string)
     cursor = con.cursor()
-    insert_query = """ INSERT INTO courses (id,coin_name, price, updated_at) 
+    insert_query = """ INSERT INTO courses (id,coin_name, price, time) 
     VALUES (%s, %s, %s,%s)
     ON CONFLICT (id) DO UPDATE 
     SET price = %s, 
-    updated_at = %s"""
+    time = %s"""
 
     for i in range(len(courses)):
         item_purchase_time = datetime.datetime.now()
@@ -66,7 +66,7 @@ def site():
             return 'THIS SYMBOL DOES NOT EXIST'
         return task
 
-    app.run(debug=bool(config['DEFAULT']['debug']), use_reloader=False, host='0.0.0.0', port=5000)
+    app.run(debug=bool(config['DEFAULT']['debug']), use_reloader=False, port=5000)
 
 
 if __name__ == '__main__':
