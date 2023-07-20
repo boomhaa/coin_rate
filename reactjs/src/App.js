@@ -1,9 +1,10 @@
 import React,{useState, useEffect} from "react";
 
 function App() {
+
   const [data,setData]=useState([{}])
   useEffect(()=>{
-    fetch('/v1/courses').then(res=>res.json()).then(data=>{
+    fetch('http://localhost:5000/v1/courses').then(res=>res.json()).then(data=>{
       setData(data)
       console.log(data)
     })

@@ -8,17 +8,25 @@ services:
       - POSTGRES_PASSWORD=vladik12345
       - POSTGRES_DB=postgres
     volumes:
-      - ./postgres-data/postgres:/var/lib/postgresql/data
+      - ./backend/postgres-data/postgres:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
   app:
     restart: always
-    build: .
+    build:
+      context: ./backend/
+      dockerfile: dockerfile
     ports:
       - 5000:5000
-    volumes:
-      - .:/app
     depends_on:
       - db
-    entrypoint: [ "python", "-u","main.py","runserver" ]
+  client:
+    build:
+      context: ./reactjs/
+      dockerfile: dockerfile
+    ports:
+      - "28080:80"
+    container_name: sn-client
+    depends_on:
+      - app
