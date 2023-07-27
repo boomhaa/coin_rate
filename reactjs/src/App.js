@@ -1,6 +1,5 @@
 import React,{useState, useEffect} from "react";
-
-
+import './App.css'
 function App() {
 
   const [data,setData]=useState([{}])
@@ -15,23 +14,23 @@ function App() {
     <div>
         {(typeof data.courses==='undefined')?(<p>Loading ... </p>):(
           data.courses.map((course,i)=>(
-            
-            <table border={1} className="sa">
-              <thead>
-                <tr>
-                  <th>symbol</th>
-                  <th>price</th>
-                </tr>
-              </thead>
-              <tbody key={i}>
-                  <td width={250} align="center">{course.symbol}</td>
-                  <td width={250} align="center"> {course.price} </td>
+                    <div className="sas">
 
-              </tbody>
-            
-            </table>
+                    <div className="sa">
+                        {course.symbol}
+                    </div>
+                     
+                        {(course.condition==='up')?(
+  
+                        <div className="sa as bg-success">
+                        {course.price}
+                      </div>):(<div className="sa as bg-danger">
+                        {course.price}
+                      </div>)}
+                    
+                    
 
-            
+                    </div>
             
           ))
         )}
