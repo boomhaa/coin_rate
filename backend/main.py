@@ -13,6 +13,7 @@ class App:
         self.courses = courses
         self.previous=dict()
 
+        
     def post_and_update_data_in_db(self, courses):
         db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
         con = psycopg2.connect(db_string)
