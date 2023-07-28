@@ -42,12 +42,15 @@ class App:
                 new_courses = self.courses.json()
                 self.courses={'courses':self.courses.json()}
                 for i in range(len(self.courses['courses'])):
-                    if float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])>0:
-                        self.courses['courses'][i]['condition']='down'
-                    elif float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])<0:
-                        self.courses['courses'][i]['condition']='up'
-                    else:
-                        self.courses['courses'][i]['condition'] = self.previous['courses'][i]['condition']
+                    try:
+                        if float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])>0:
+                            self.courses['courses'][i]['condition']='down'
+                        elif float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])<0:
+                            self.courses['courses'][i]['condition']='up'
+                        else:
+                            self.courses['courses'][i]['condition'] = self.previous['courses'][i]['condition']
+                    except:
+                        pass
                 self.post_and_update_data_in_db(new_courses)
 
             time.sleep(5)

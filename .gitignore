@@ -1,3 +1,4 @@
 **/.idea
 **/.__pycache__
+**/postgres-data
 1.py

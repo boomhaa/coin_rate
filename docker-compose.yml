@@ -11,7 +11,7 @@ services:
       - ./backend/postgres-data/postgres:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
     ports:
-      - 5432:5432
+      - 5433:5432
   app:
     restart: always
     build:
