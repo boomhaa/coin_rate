@@ -11,9 +11,8 @@ import time
 class App:
     def __init__(self, courses):
         self.courses = courses
-        self.previous=dict()
+        self.previous = dict()
 
-        
     def post_and_update_data_in_db(self, courses):
         db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
         con = psycopg2.connect(db_string)
@@ -36,18 +35,19 @@ class App:
 
     def schedule(self):
         while True:
-            self.previous=self.courses
+            self.previous = self.courses
             self.courses = requests.get('https://api.binance.com/api/v3/ticker/price')
             if self.courses.status_code == 200:
 
                 new_courses = self.courses.json()
-                self.courses={'courses':self.courses.json()}
+                self.courses = {'courses': self.courses.json()}
                 for i in range(len(self.courses['courses'])):
                     try:
-                        if float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])>0:
-                            self.courses['courses'][i]['condition']='down'
-                        elif float(self.previous['courses'][i]['price'])-float(self.courses['courses'][i]['price'])<0:
-                            self.courses['courses'][i]['condition']='up'
+                        if float(self.previous['courses'][i]['price']) - float(self.courses['courses'][i]['price']) > 0:
+                            self.courses['courses'][i]['condition'] = 'down'
+                        elif float(self.previous['courses'][i]['price']) - float(
+                                self.courses['courses'][i]['price']) < 0:
+                            self.courses['courses'][i]['condition'] = 'up'
                         else:
                             self.courses['courses'][i]['condition'] = self.previous['courses'][i]['condition']
                     except:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         coin['symbol'] = str(i[1])
         number = float(i[2])
         coin['price'] = str(f'{number:.10f}')
-        coin['condition']='normal'
+        coin['condition'] = 'normal'
         courses['courses'].append(coin)
     my_app = App(courses)
     t1 = Thread(target=my_app.site, daemon=True)

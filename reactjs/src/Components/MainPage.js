@@ -8,11 +8,25 @@ export const MainPage = () => {
         console.log(data)
       })
     },[])
+    
+    const [value,setValue]=useState('')
+    const filteredCoins=data.courses && data.courses.filter(coin=>{
+      return coin.symbol.toLowerCase().includes(value.toLowerCase())
+    })
 
     return (
-      <div>
+      <div className="form-center">
+        <div>
+        <input
+        type="text"
+        placeholder="Search"
+        
+        onChange={(event)=>setValue(event.target.value)}
+      />
+      </div>
+      <br/>
           {(typeof data.courses==='undefined')?(<p>Loading ... </p>):(
-            data.courses.map((course,i)=>(
+            filteredCoins.map((course,i)=>(
                       <div className="sas">
 
                       <div className="sa">

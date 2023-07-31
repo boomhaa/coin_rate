@@ -12,6 +12,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - 5433:5432
+    command: -p 5433
   app:
     restart: always
     build:

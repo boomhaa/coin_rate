@@ -24,6 +24,10 @@
 
 }
 
+.form-center {
+  margin-top: 20px;
+  text-align: center;
+}
 .sas{
   
 display: inline-block;
