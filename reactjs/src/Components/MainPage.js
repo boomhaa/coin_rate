@@ -1,4 +1,5 @@
 import React,{useState, useEffect} from "react";
+import {Link} from 'react-router-dom'
 import '../App.css'
 export const MainPage = () => {
     const [data,setData]=useState([{}])
@@ -15,8 +16,18 @@ export const MainPage = () => {
     })
 
     return (
-      <div className="form-center">
+      <div >
         <div>
+        <h1>
+        <Link to='/login'> login</Link>
+        </h1>
+        <p>
+          Or <Link to='/register'> register</Link>
+        </p>
+
+        <p>page <Link to='/about'>about me</Link></p>
+        </div>
+        <div className="form-center">
         <input
         type="text"
         placeholder="Search"
