@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import {Link} from 'react-router-dom'
 import axios from "axios";
 export const LandingPage= () => {
   const [user, setUser] = useState({});
@@ -44,6 +44,7 @@ export const LandingPage= () => {
           <button onClick={logoutUser}>Logout</button>
         </div>
       )}
+    <Link to='/'>main page</Link>
     </div>
   );
 };

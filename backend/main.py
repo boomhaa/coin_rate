@@ -2,16 +2,12 @@ from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from threading import Thread, Lock
 from flask import Flask,request,session,jsonify
-
 from models import db,User
 import configparser
 import psycopg2
 import datetime
 import requests
 import time
-import redis
-import os
-
 
 class App:
     def __init__(self, courses):
@@ -23,11 +19,11 @@ class App:
         db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
         con = psycopg2.connect(db_string)
         cursor = con.cursor()
-        insert_query = """ INSERT INTO courses (id,coin_name, price, time) 
+        insert_query = """ INSERT INTO courses (id,coin_name, price, updated_at) 
         VALUES (%s, %s, %s,%s)
         ON CONFLICT (id) DO UPDATE 
         SET price = %s, 
-        time = %s;"""
+        updated_at = %s;"""
 
         for i in range(len(courses)):
             item_purchase_time = datetime.datetime.now()
@@ -60,7 +56,7 @@ class App:
                         pass
                 self.post_and_update_data_in_db(new_courses)
 
-            time.sleep(500)
+            time.sleep(10)
 
     def site(self):
         app = Flask(__name__)
