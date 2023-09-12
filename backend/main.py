@@ -100,6 +100,7 @@ class App:
         def signup():
             email = request.json["email"]
             password = request.json["password"]
+            favorite_rates=""
 
             user_exists = User.query.filter_by(email=email).first() is not None
 
@@ -107,7 +108,7 @@ class App:
                 return jsonify({"error": "Email already exists"}), 409
 
             hashed_password = bcrypt.generate_password_hash(password)
-            new_user = User(email=email, password=hashed_password)
+            new_user = User(email=email, password=hashed_password,favorite_rates=favorite_rates)
             db.session.add(new_user)
             db.session.commit()
 
@@ -115,7 +116,7 @@ class App:
 
             return jsonify({
                 "id": new_user.id,
-                "email": new_user.email
+                "email": new_user.email,
             })
 
         @cross_origin
@@ -143,6 +144,24 @@ class App:
             })
 
         @cross_origin
+        @app.route("/favorite_rates", methods=["POST"])
+        def favourite_rates():
+            favorite_rates=request.json['favorite_rates']
+            favorite_rates=', '.join(favorite_rates)
+            user_id = self.session.get('user_id')
+            user = User.query.filter_by(id=user_id).first()
+            user.favorite_rates=favorite_rates
+            db.session.commit()
+            print('-------------------------------------------------')
+            print(User.query.filter_by(id=user_id).first().favorite_rates)
+            print('-------------------------------------------------')
+            return jsonify(
+                {
+                    "favorite_rates": user.favorite_rates
+                }
+            )
+
+        @cross_origin
         @app.route('/me',methods=['GET'])
         def get_current_user():
 
@@ -153,7 +172,8 @@ class App:
             user = User.query.filter_by(id=user_id).first()
             return jsonify({
                 "id": user.id,
-                "email": user.email
+                "email": user.email,
+                "favorite_rates": user.favorite_rates
             })
 
         @cross_origin

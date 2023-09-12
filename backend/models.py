@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import *
 from uuid import uuid4
 
 db = SQLAlchemy()
@@ -13,3 +14,4 @@ class User(db.Model):
     id = db.Column(db.String(32), primary_key=True, unique=True, default=get_uuid)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.Text, nullable=False)
+    favorite_rates=db.Column(db.Text,nullable=True)

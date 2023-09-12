@@ -39,10 +39,25 @@ margin-left: 73px;
   border: 1px double black;
   overflow:hidden;
   width: 150px;
-  height: 80px
+  height: 105px
   
   
 }
+.sas1{
+  
+  display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 73px;
+  
+  
+    border: 1px double black;
+    overflow:hidden;
+    width: 150px;
+    height: 80px
+    
+    
+  }
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
