@@ -152,9 +152,6 @@ class App:
             user = User.query.filter_by(id=user_id).first()
             user.favorite_rates=favorite_rates
             db.session.commit()
-            print('-------------------------------------------------')
-            print(User.query.filter_by(id=user_id).first().favorite_rates)
-            print('-------------------------------------------------')
             return jsonify(
                 {
                     "favorite_rates": user.favorite_rates
