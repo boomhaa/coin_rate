@@ -2,3 +2,4 @@ psycopg2-binary
 flask==2.2.2
 requests
 flask_cors
+flask_bcrypt
