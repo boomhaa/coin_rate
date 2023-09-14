@@ -1,19 +1,20 @@
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from threading import Thread, Lock
-from flask import Flask,request,session,jsonify
-from models import db,User
+from flask import Flask, request, session, jsonify
+from models import db, User
 import configparser
 import psycopg2
 import datetime
 import requests
 import time
 
+
 class App:
     def __init__(self, courses):
         self.courses = courses
         self.previous = dict()
-        self.session=session
+        self.session = session
 
     def post_and_update_data_in_db(self, courses):
         db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
@@ -66,21 +67,19 @@ class App:
         app.secret_key = secret
         CORS(app, supports_credentials=True)
         app.config['SESSION_TYPE'] = 'filesystem'
-        app.config['SECRET_KEY']=secret
+        app.config['SECRET_KEY'] = secret
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-        app.config['SQLALCHEMY_ECHO']=True
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        app.config['SQLALCHEMY_ECHO'] = True
         app.config['USE_PERMANENT_SESSION'] = True
-        app.config['SESSION_USE_SIGNER']=True
+        app.config['SESSION_USE_SIGNER'] = True
         app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 
         bcrypt = Bcrypt(app)
 
-
         db.init_app(app)
         with app.app_context():
             db.create_all()
-
 
         @cross_origin
         @app.route('/v1/courses', methods=['GET'])
@@ -100,7 +99,7 @@ class App:
         def signup():
             email = request.json["email"]
             password = request.json["password"]
-            favorite_rates=""
+            favorite_rates = ""
 
             user_exists = User.query.filter_by(email=email).first() is not None
 
@@ -108,7 +107,7 @@ class App:
                 return jsonify({"error": "Email already exists"}), 409
 
             hashed_password = bcrypt.generate_password_hash(password)
-            new_user = User(email=email, password=hashed_password,favorite_rates=favorite_rates)
+            new_user = User(email=email, password=hashed_password, favorite_rates=favorite_rates)
             db.session.add(new_user)
             db.session.commit()
 
@@ -121,7 +120,6 @@ class App:
 
         @cross_origin
         @app.route("/login", methods=["POST"])
-
         def login_user():
 
             email = request.json["email"]
@@ -146,11 +144,11 @@ class App:
         @cross_origin
         @app.route("/favorite_rates", methods=["POST"])
         def favourite_rates():
-            favorite_rates=request.json['favorite_rates']
-            favorite_rates=', '.join(favorite_rates)
+            favorite_rates = request.json['favorite_rates']
+            favorite_rates = ', '.join(favorite_rates)
             user_id = self.session.get('user_id')
             user = User.query.filter_by(id=user_id).first()
-            user.favorite_rates=favorite_rates
+            user.favorite_rates = favorite_rates
             db.session.commit()
             return jsonify(
                 {
@@ -159,18 +157,20 @@ class App:
             )
 
         @cross_origin
-        @app.route('/me',methods=['GET'])
+        @app.route('/me', methods=['GET'])
         def get_current_user():
 
             print(self.session)
-            user_id=self.session.get('user_id')
+            user_id = self.session.get('user_id')
             if not user_id:
                 return jsonify({"error": "Unauthorized"}), 401
             user = User.query.filter_by(id=user_id).first()
+            favourite = list(filter(lambda t:t['symbol'] in user.favorite_rates.split(', '),self.courses['courses']))
+
             return jsonify({
                 "id": user.id,
                 "email": user.email,
-                "favorite_rates": user.favorite_rates
+                "favorite_rates": favourite
             })
 
         @cross_origin
@@ -178,6 +178,7 @@ class App:
         def logout_user():
             self.session.pop("user_id")
             return "200"
+
         app.run(debug=bool(config['DEFAULT']['debug']), use_reloader=False, port=5000, host='0.0.0.0')
 
 

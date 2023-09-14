@@ -41,7 +41,28 @@ export const LandingPage= () => {
           <h2>Logged in</h2>
           <h3>ID: {user.id}</h3>
           <h3>Email: {user.email}</h3>
-          <h4>Favorite rates: {user.favorite_rates}</h4>
+          <div><h4>Favorite rates: </h4>{(typeof user.favorite_rates==='undefined')?(<p>Loading ... </p>):(
+            user.favorite_rates.map((course,i)=>(
+                      <div className="sas1">
+
+                      <div className="sa">
+                          {course.symbol}
+                      </div>
+
+                          {(course.condition==='up')?(
+
+                          <div className="sa as bg-success bg-opacity-75" >
+                          {course.price}
+                        </div>):(<div className="sa as bg-danger bg-opacity-75">
+                          {course.price}
+                        </div>)}
+                        
+                        
+
+                      </div>
+
+            ))
+          )}</div>
           <button onClick={logoutUser}>Logout</button>
         </div>
       )}

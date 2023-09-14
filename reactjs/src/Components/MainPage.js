@@ -95,7 +95,7 @@ if (e.target.value){
                       </div>))
 
 }</div>)
-                          ):((filteredCoins.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p>You didn't choose favorite rates</p>
+                          ):((filteredCoins.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p className="saw">You didn't choose favorite rates</p>
                           </div>):(<div><p>Your favourite rates are {CheckBox.join(', ')}</p> <button onClick={FavoriteRates}>Save</button></div>)}{filteredCoins.map((course,i)=>(
 
                 

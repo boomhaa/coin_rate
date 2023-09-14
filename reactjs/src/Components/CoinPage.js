@@ -15,7 +15,7 @@ export const CoinPage =()=>{
 
 {(typeof data==='undefined')?(<p>Loading ... </p>):(
             data.map((course,i)=>(
-                      <div className="sas">
+                      <div className="sas1">
 
                       <div className="sa">
                           {course.symbol}
