@@ -49,21 +49,30 @@ margin-left: 73px;
   margin-bottom: 45.5px;
 
 }
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#category-list {
+  padding: 5px;
+}
+
 .sas1{
   
   display: inline-block;
   margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 73px;
-  
-  
-    border: 1px double black;
-    overflow:hidden;
-    width: 150px;
-    height: 80px
-    
-    
+  border: 1px double black;
+  overflow:hidden;
+  width: 150px;
+  height: 80px
+
   }
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

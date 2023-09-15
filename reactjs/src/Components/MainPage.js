@@ -50,6 +50,10 @@ if (e.target.value){
       window.location.href = '/'
     }
 
+    const [SelectedCategory, setSelectedCategory]=useState('')
+    
+   const filteredList=(SelectedCategory!=='favorite')?(filteredCoins && filteredCoins.filter(coin=>{return coin.condition.includes(SelectedCategory)})):(user.favorite_rates && user.favorite_rates.filter(coin=>{return coin}))
+
     return (
       <div >
         {Object.keys(user)==0 ? (<div>
@@ -68,6 +72,21 @@ if (e.target.value){
           <button onClick={logoutUser}>Logout</button>
           <p>page <Link to='/about'>about me</Link></p>
         </div>)}
+        <div className="filter-container">
+        <div>Filter by Category:</div>
+        <div>
+          <select
+            name="category-list"
+            id="category-list"
+            onChange={(event)=>setSelectedCategory(event.target.value)}
+          >
+            <option value="">All</option>
+            <option value="up">up</option>
+            <option value="down">down</option>
+            <option value="favorite">favorite</option>
+          </select>
+        </div>
+      </div>
         <div className="form-center">
         <input
         type="text"
@@ -77,9 +96,9 @@ if (e.target.value){
       />
       </div>
       <br/>
-          {(typeof data.courses==='undefined')?(<p>Loading ... </p>):((Object.keys(user)==0)?((filteredCoins.length===0)?(<p className="form-center">There are no such courses
+          {(typeof data.courses==='undefined')?(<p>Loading ... </p>):((Object.keys(user)==0)?((filteredList.length===0)?(<p className="form-center">There are no such courses
           </p>):(<div><p>You need to login on for choosing a favorite rates</p>
-            {filteredCoins.map((course,i)=>(
+            {filteredList.map((course,i)=>(
               
                 
                       <div className="sas1">
@@ -95,25 +114,28 @@ if (e.target.value){
                       </div>))
 
 }</div>)
-                          ):((filteredCoins.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p className="saw">You didn't choose favorite rates</p>
-                          </div>):(<div><p>Your favourite rates are {CheckBox.join(', ')}</p> <button onClick={FavoriteRates}>Save</button></div>)}{filteredCoins.map((course,i)=>(
+                          ):((filteredList.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p className="saw">You didn't choose favorite rates</p>
+                          </div>):(<div><p>Your favourite rates are {CheckBox.join(', ')}</p> <button onClick={FavoriteRates}>Save</button></div>)}{filteredList.map((course,i)=>(
 
                 
-<div className="sas">
-<input value = {course.symbol} type = "checkbox" onChange = {handleChange} />
-<div className="sa">
-    {course.symbol}
-</div>
-    {(course.condition==='up')?(
-    <div className="sa as bg-success bg-opacity-75">
-    {course.price}
-  </div>):(<div className="sa as bg-danger bg-opacity-75">
-    {course.price}
-  </div>)}
-</div>
-))}</div>
-            
-                          )))}
-      </div>
+                            <div className="sas">
+                            <input value = {course.symbol} type = "checkbox" onChange = {handleChange} />
+                            <div className="sa">
+                                {course.symbol}
+                            </div>
+                                {(course.condition==='up')?(
+                                <div className="sa as bg-success bg-opacity-75">
+                                {course.price}
+                              </div>):(<div className="sa as bg-danger bg-opacity-75">
+                                {course.price}
+                              </div>)}
+                            </div>
+                            ))}</div>
+
+                                                      )
+                                                      )
+                                                      )
+                                                      }
+                                  </div>
     );
 }
