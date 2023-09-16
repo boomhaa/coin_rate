@@ -2,6 +2,8 @@ import React,{useState, useEffect} from "react";
 import {Link} from 'react-router-dom'
 import '../App.css'
 import axios from "axios";
+import Chart from "chart.js/auto"; // Importing the Chart.js library
+import { Line } from "react-chartjs-2";
 
 export const MainPage = () => {
     const [data,setData]=useState([{}])
@@ -35,6 +37,9 @@ export const MainPage = () => {
     })
 
     const [CheckBox,setCheckBox]=useState([])
+
+
+
     function handleChange(e){
 
 if (e.target.value){
@@ -95,6 +100,7 @@ if (e.target.value){
         onChange={(event)=>setValue(event.target.value)}
       />
       </div>
+    
       <br/>
           {(typeof data.courses==='undefined')?(<p>Loading ... </p>):((Object.keys(user)==0)?((filteredList.length===0)?(<p className="form-center">There are no such courses
           </p>):(<div><p>You need to login on for choosing a favorite rates</p>

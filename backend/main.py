@@ -24,13 +24,16 @@ class App:
         VALUES (%s, %s, %s,%s)
         ON CONFLICT (id) DO UPDATE 
         SET price = %s, 
-        updated_at = %s;"""
+        updated_at = %s,
+        history=%s;"""
 
         for i in range(len(courses)):
+
             item_purchase_time = datetime.datetime.now()
             item_tuple = (
                 i + 1, courses[i]['symbol'], courses[i]['price'], item_purchase_time, courses[i]['price'],
-                item_purchase_time)
+                item_purchase_time,courses[i]['history'])
+
             cursor.execute(insert_query, item_tuple)
 
         con.commit()
@@ -44,6 +47,17 @@ class App:
 
                 new_courses = self.courses.json()
                 self.courses = {'courses': self.courses.json()}
+
+                for i in range(len(new_courses)):
+                    if len(self.previous['courses'][i]['history'])==21:
+                        self.previous['courses'][i]['history'].pop(0)
+                    self.previous['courses'][i]['history'].append(float(self.courses['courses'][i]['price']))
+                    new_courses[i]['history']=self.previous['courses'][i]['history']
+                for i in range(len(self.courses['courses'])):
+                    try:
+                        self.courses['courses'][i]['history']=self.previous['courses'][i]['history']
+                    except:
+                        pass
                 for i in range(len(self.courses['courses'])):
                     try:
                         if float(self.previous['courses'][i]['price']) - float(self.courses['courses'][i]['price']) > 0:
@@ -205,6 +219,12 @@ if __name__ == '__main__':
         number = float(i[2])
         coin['price'] = str(f'{number:.10f}')
         coin['condition'] = 'normal'
+        if i[4] is not None:
+            for j in range(len(i[4])):
+                i[4][j]=float(i[4][j])
+            coin['history']=i[4]
+        else:
+            coin['history']=[]
         courses['courses'].append(coin)
     my_app = App(courses)
     t1 = Thread(target=my_app.site, daemon=True)

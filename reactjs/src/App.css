@@ -23,7 +23,10 @@
   border-top: 1px double black;
 
 }
-
+.canvas-container{
+  width: 600px;
+  height: 400px;
+}
 .form-center {
   margin-top: 20px;
   text-align: center;
