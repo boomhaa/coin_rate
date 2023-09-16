@@ -2,8 +2,6 @@ import React,{useState, useEffect} from "react";
 import {Link} from 'react-router-dom'
 import '../App.css'
 import axios from "axios";
-import Chart from "chart.js/auto"; // Importing the Chart.js library
-import { Line } from "react-chartjs-2";
 
 export const MainPage = () => {
     const [data,setData]=useState([{}])
@@ -57,8 +55,9 @@ if (e.target.value){
 
     const [SelectedCategory, setSelectedCategory]=useState('')
     
-   const filteredList=(SelectedCategory!=='favorite')?(filteredCoins && filteredCoins.filter(coin=>{return coin.condition.includes(SelectedCategory)})):(user.favorite_rates && user.favorite_rates.filter(coin=>{return coin}))
-
+   const filteredList=(SelectedCategory!=='favorite')?(filteredCoins && filteredCoins.filter(coin=>{return coin.condition.includes(SelectedCategory)})):((Object.keys(user)!=0)?(user.favorite_rates && user.favorite_rates.filter(coin=>{return coin})):([]))
+   const [sortType, setSortType] = useState('');
+   const sortedList=(sortType!=="")?((sortType==='degrease')?(filteredList&&[...filteredList].sort((a,b)=>b['price']-a['price'])):(filteredList&&[...filteredList].sort((a,b)=>a['price']-b['price']))):(filteredList)
     return (
       <div >
         {Object.keys(user)==0 ? (<div>
@@ -80,6 +79,7 @@ if (e.target.value){
         <div className="filter-container">
         <div>Filter by Category:</div>
         <div>
+        
           <select
             name="category-list"
             id="category-list"
@@ -91,6 +91,21 @@ if (e.target.value){
             <option value="favorite">favorite</option>
           </select>
         </div>
+        
+        <div>
+        
+        <select
+          name="category-list"
+          id="category-list"
+          onChange={(event)=>setSortType(event.target.value)}
+        >
+          <option value="">unsorted</option>
+          <option value="increase">increase</option>
+          <option value="degrease">degrease</option>
+
+        </select>
+      </div>
+      <div>Sorting by price:</div>
       </div>
         <div className="form-center">
         <input
@@ -102,9 +117,9 @@ if (e.target.value){
       </div>
     
       <br/>
-          {(typeof data.courses==='undefined')?(<p>Loading ... </p>):((Object.keys(user)==0)?((filteredList.length===0)?(<p className="form-center">There are no such courses
+          {(typeof data.courses==='undefined')?(<p>Loading ... </p>):((Object.keys(user)==0)?((sortedList.length===0)?(<p className="form-center">There are no such courses
           </p>):(<div><p>You need to login on for choosing a favorite rates</p>
-            {filteredList.map((course,i)=>(
+            {sortedList.map((course,i)=>(
               
                 
                       <div className="sas1">
@@ -120,14 +135,14 @@ if (e.target.value){
                       </div>))
 
 }</div>)
-                          ):((filteredList.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p className="saw">You didn't choose favorite rates</p>
-                          </div>):(<div><p>Your favourite rates are {CheckBox.join(', ')}</p> <button onClick={FavoriteRates}>Save</button></div>)}{filteredList.map((course,i)=>(
+                          ):((sortedList.length===0)?(<p className="form-center">There are no such courses</p>):(<div>{(CheckBox.length===0)?(<div><p className="saw">You didn't choose favorite rates</p>
+                          </div>):(<div><p>Your favourite rates are {CheckBox.join(', ')}</p> <button onClick={FavoriteRates}>Save</button></div>)}{sortedList.map((course,i)=>(
 
                 
                             <div className="sas">
                             <input value = {course.symbol} type = "checkbox" onChange = {handleChange} />
                             <div className="sa">
-                                {course.symbol}
+                         {course.symbol}
                             </div>
                                 {(course.condition==='up')?(
                                 <div className="sa as bg-success bg-opacity-75">

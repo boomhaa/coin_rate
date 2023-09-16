@@ -62,7 +62,10 @@ margin-left: 73px;
 #category-list {
   padding: 5px;
 }
+.right_list {
 
+float: right;
+}
 .sas1{
   
   display: inline-block;
